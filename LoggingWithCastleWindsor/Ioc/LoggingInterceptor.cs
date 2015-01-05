@@ -50,7 +50,7 @@ namespace LoggingWithCastleWindsor.Ioc
                 throw;
             }
 
-            if (logger.IsInfoEnabled && invocation.ReturnValue != null)
+            if (logger.IsInfoEnabled && method.ReturnType != typeof(void))
             {
                 logger.InfoFormat(
                     new TypeAndPropertiesFormatter(),

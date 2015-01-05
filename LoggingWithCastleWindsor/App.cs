@@ -27,6 +27,11 @@ namespace LoggingWithCastleWindsor
             Logger.Info("Calling List");
 
             _controller.List(100.0m, 550.0m);
+
+            Logger.Info("Calling Find with Nxt");
+
+            _controller.Find("Nxt");
+
         }
 
         public ILogger Logger

@@ -1,4 +1,5 @@
-﻿using LoggingWithCastleWindsor.Ioc;
+﻿using FluentAssertions;
+using LoggingWithCastleWindsor.Ioc;
 using NUnit.Framework;
 
 namespace LoggingWithCastleWindsor.Tests
