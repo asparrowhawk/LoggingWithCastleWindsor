@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Castle.Core.Logging;
 using Castle.DynamicProxy;
 using LoggingWithCastleWindsor.Infrastructure;
 
 namespace LoggingWithCastleWindsor.Ioc
 {
-    public class LoggingInterceptor : IInterceptor
+    public class BaseInterceptor : IInterceptor
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly IDictionary<Type, ILogger> _loggers;
 
-        public LoggingInterceptor(ILoggerFactory loggerFactory)
+        protected BaseInterceptor(ILoggerFactory loggerFactory)
             : this(loggerFactory, new Dictionary<Type, ILogger>())
         { }
 
-        internal LoggingInterceptor(ILoggerFactory loggerFactory, IDictionary<Type, ILogger> loggers)
+        protected BaseInterceptor(ILoggerFactory loggerFactory, IDictionary<Type, ILogger> loggers)
         {
             Guard.ArgumentNotNull(loggerFactory, "loggerFactory");
             Guard.ArgumentNotNull(loggers, "loggers");
@@ -26,37 +27,14 @@ namespace LoggingWithCastleWindsor.Ioc
 
         public void Intercept(IInvocation invocation)
         {
-            var method = invocation.Method;
-
             var logger = GetLogger(invocation.TargetType);
 
-            if (logger.IsInfoEnabled)
-            {
-                var arguments = invocation.Arguments;
+            Intercept(logger, invocation);
+        }
 
-                logger.InfoFormat("Calling {0}", method.NameAndArguments(arguments));
-            }
-
-            try
-            {
-                invocation.Proceed();
-            }
-            catch (Exception exception)
-            {
-                if (logger.IsErrorEnabled)
-                {
-                    logger.ErrorFormat(exception, method.DeclaringTypeAndName());
-                }
-                throw;
-            }
-
-            if (logger.IsInfoEnabled && method.ReturnType != typeof(void))
-            {
-                logger.InfoFormat(
-                    new TypeAndPropertiesFormatter(),
-                    "  {0} returned {1:TP}", method.DeclaringTypeAndName(), invocation.ReturnValue
-                    );
-            }
+        protected virtual void Intercept(ILogger logger, IInvocation invocation)
+        {
+            invocation.Proceed();
         }
 
         private ILogger GetLogger(Type type)
@@ -71,6 +49,98 @@ namespace LoggingWithCastleWindsor.Ioc
             _loggers.Add(type, logger);
 
             return logger;
+        }
+    }
+
+    public class LoggingInterceptor : BaseInterceptor
+    {
+        public LoggingInterceptor(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
+        { }
+
+        protected override void Intercept(ILogger logger, IInvocation invocation)
+        {
+            LogCall(logger, invocation);
+
+            invocation.Proceed();
+
+            LogReturn(logger, invocation.Method, invocation.ReturnValue);
+        }
+
+        private static void LogCall(ILogger logger, IInvocation invocation)
+        {
+            if (!logger.IsDebugEnabled)
+            {
+                return;
+            }
+
+            var method = invocation.Method;
+
+            var arguments = invocation.Arguments;
+
+            LogDebug(logger, "Calling {0}", method.NameAndArguments(arguments));
+        }
+
+        private static void LogDebug(ILogger logger, string format, params object[] args)
+        {
+            logger.DebugFormat(
+                new TypeAndPropertiesFormatter(), 
+                format,
+                args
+                );
+        }
+
+        private static void LogReturn(ILogger logger, MethodInfo method, object returnValue)
+        {
+            if (logger.IsDebugEnabled && method.ReturnType != typeof(void))
+            {
+                LogDebug(logger, "  {0} returned {1:TP}", method.DeclaringTypeAndName(), returnValue);
+            }
+        }
+    }
+
+    public class ExceptionInterceptor : BaseInterceptor
+    {
+        public ExceptionInterceptor(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
+        { }
+
+        protected override void Intercept(ILogger logger, IInvocation invocation)
+        {
+            try
+            {
+                invocation.Proceed();
+            }
+            catch (Exception exception)
+            {
+                LogException(logger, exception, invocation.Method);
+
+                throw;
+            }
+        }
+
+        private static void LogException(ILogger logger, Exception exception, MethodInfo method)
+        {
+            if (logger.IsErrorEnabled)
+            {
+                logger.ErrorFormat(exception, method.DeclaringTypeAndName());
+            }
+        }
+    }
+
+
+    public class TimingInterceptor : BaseInterceptor
+    {
+        public TimingInterceptor(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
+        { }
+
+        protected override void Intercept(ILogger logger, IInvocation invocation)
+        {
+            using(new DisposableStopwatch(logger, invocation.Method.DeclaringTypeAndName()))
+            {
+                invocation.Proceed();
+            }
         }
     }
 }

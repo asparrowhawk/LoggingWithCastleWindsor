@@ -65,16 +65,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GuardLiterals.resx</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\DisposableStopwatch.cs" />
     <Compile Include="Infrastructure\ResharperAnnotations.cs" />
     <Compile Include="Infrastructure\TypeAndPropertiesFormatter.cs" />
     <Compile Include="Ioc\AppIOC.cs" />
     <Compile Include="DataAccess\DataAccessInstaller.cs" />
     <Compile Include="Ioc\CollectionResolverFacility.cs" />
+    <Compile Include="Ioc\FloatExtensions.cs" />
     <Compile Include="Ioc\InterceptorInstaller.cs" />
     <Compile Include="Ioc\InterceptorSelectorFacility.cs" />
     <Compile Include="Ioc\InterceptorsSelector.cs" />
+    <Compile Include="Ioc\LoggingInstaller.cs" />
     <Compile Include="Ioc\LoggingInterceptor.cs" />
     <Compile Include="Infrastructure\MethodInfoExtensions.cs" />
+    <Compile Include="Ioc\PerformanceCounterSnapshot.cs" />
     <Compile Include="Ioc\WindsorExtensions.cs" />
     <Compile Include="Presentation\Controller.cs" />
     <Compile Include="Presentation\PresentationInstaller.cs" />

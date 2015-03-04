@@ -1,4 +1,5 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using Castle.Facilities.TypedFactory;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using LoggingWithCastleWindsor.DataAccess;
 using LoggingWithCastleWindsor.Presentation;
@@ -16,7 +17,7 @@ namespace LoggingWithCastleWindsor.Ioc
             ConfigureFacilities(_container);
 
             _container.Install(
-                new InterceptorInstaller<LoggingInterceptor>(),
+                new LoggingInstaller(),
                 new DataAccessInstaller(),
                 new PresentationInstaller()
                 );
@@ -30,8 +31,7 @@ namespace LoggingWithCastleWindsor.Ioc
         {
             container.AddFacility<CollectionResolverFacility>();
             container.AddFacility<InterceptorSelectorFacility<InterceptorsSelector>>();
-
-            container.AddLoggingFacility("log4net.config");
+            container.AddFacility<TypedFactoryFacility>();
         }
 
         public T Resolve<T>()

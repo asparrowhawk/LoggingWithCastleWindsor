@@ -25,7 +25,9 @@ namespace LoggingWithCastleWindsor.Ioc
             // Implicit logging ...
             return new[]
                 {
-                    InterceptorReference.ForType<LoggingInterceptor>()
+                    InterceptorReference.ForType<LoggingInterceptor>(),
+                    InterceptorReference.ForType<ExceptionInterceptor>(),
+                    InterceptorReference.ForType<TimingInterceptor>()
                 };
         }
     }
