@@ -128,7 +128,6 @@ namespace LoggingWithCastleWindsor.Ioc
         }
     }
 
-
     public class TimingInterceptor : BaseInterceptor
     {
         public TimingInterceptor(ILoggerFactory loggerFactory)

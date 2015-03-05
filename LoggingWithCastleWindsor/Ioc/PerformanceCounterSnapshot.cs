@@ -14,21 +14,34 @@ namespace LoggingWithCastleWindsor.Ioc
             _performanceCounter = CreatePerformanceCounter(path);
             try
             {
-                _performanceCounter.NextValue();
+                NextValue();
             }
             catch (Exception exception)
             {
-                throw new Exception("Unable to create performance counter with path: " + path, exception);
+                var message = string.Format("Unable to create performance counter with path: '{0}'", path);
+                throw new Exception(message, exception);
             }
+        }
+
+        private float NextValue()
+        {
+            return _performanceCounter.NextValue();
         }
 
         public override string ToString()
         {
-            var value = _performanceCounter.NextValue();
+            try
+            {
+                var value = NextValue();
 
-            return (_convert == null)
-                ? Convert.ToString(value)
-                : _convert(value);
+                return (_convert == null)
+                    ? Convert.ToString(value)
+                    : _convert(value);
+            }
+            catch(Exception exception)
+            {
+                return exception.Message;
+            }
         }
 
         private static PerformanceCounter CreatePerformanceCounter(string path)

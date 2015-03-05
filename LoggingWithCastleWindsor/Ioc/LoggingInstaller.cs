@@ -25,7 +25,7 @@ namespace LoggingWithCastleWindsor.Ioc
 
         class CounterSnapshotInformation
         {
-            public CounterSnapshotInformation(string path, Func<float, string> convert)
+            public CounterSnapshotInformation(string path, Func<float, string> convert = null)
             {
                 Path = path;
                 Convert = convert;
@@ -45,12 +45,19 @@ namespace LoggingWithCastleWindsor.Ioc
 
             var paths = new List<CounterSnapshotInformation>
             {
-                new CounterSnapshotInformation(@"Memory\Available Mbytes", value => value.AsGbytes("0.0", 1024f)),
-                new CounterSnapshotInformation(@"Processor\% Processor Time\_Total", value => value.AsFormattedValue("0.00")),
-                new CounterSnapshotInformation(@"Process\% Processor Time\" + processName, value => value.AsProcessTime("0.00")),
-                new CounterSnapshotInformation(@"System\Context Switches/sec", value => value.AsFormattedValue("##,#")),
-                new CounterSnapshotInformation(@"Process\Private Bytes\" + processName, value => value.AsMbytes("0.0")),
-                new CounterSnapshotInformation(@".NET CLR Memory\# Bytes in all Heaps\" + processName, value => value.AsFormattedValue("##,#"))
+                new CounterSnapshotInformation(@"Memory\Available Mbytes"),
+                new CounterSnapshotInformation(@"Memory\Page Reads/sec"),
+                new CounterSnapshotInformation(@"Memory\Pages/sec"),
+                new CounterSnapshotInformation(@"Processor\% Processor Time\_Total"),
+                new CounterSnapshotInformation(@"Process\% Processor Time\" + processName),
+                new CounterSnapshotInformation(@"System\Context Switches/sec"),
+                new CounterSnapshotInformation(@"Process\Private Bytes\" + processName),
+                new CounterSnapshotInformation(@".NET CLR Memory\% Time in GC\" + processName),
+                new CounterSnapshotInformation(@".NET CLR Memory\# Bytes in all Heaps\" + processName),
+                new CounterSnapshotInformation(@".NET CLR Memory\# of Pinned Objects\" + processName),
+                new CounterSnapshotInformation(@".NET CLR Memory\Large Object Heap Size\" + processName),
+                new CounterSnapshotInformation(@"Process\Working Set\" + processName),
+                new CounterSnapshotInformation(@".NET CLR Exceptions\# of Exceps Thrown / sec\" + processName)
             };
 
             paths.ForEach(AddGlobalProperty);
