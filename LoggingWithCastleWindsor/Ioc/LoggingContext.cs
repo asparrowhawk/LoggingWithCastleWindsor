@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace LoggingWithCastleWindsor.Ioc
 {
-    class LoggingContext
+    internal class LoggingContext
     {
         private readonly Action<string, object> _addToConext;
 
@@ -34,6 +34,7 @@ namespace LoggingWithCastleWindsor.Ioc
         {
             var processName = Process.GetCurrentProcess().ProcessName;
 
+            // These could be read from a configuration file ...
             var counters = new List<CounterSnapshotInformation>
             {
                 new CounterSnapshotInformation(@"Memory\Available Mbytes"),

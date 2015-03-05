@@ -68,6 +68,8 @@
     <Compile Include="Infrastructure\DisposableStopwatch.cs" />
     <Compile Include="Infrastructure\ResharperAnnotations.cs" />
     <Compile Include="Infrastructure\TypeAndPropertiesFormatter.cs" />
+    <Compile Include="Ioc\ActivityAttribute.cs" />
+    <Compile Include="Ioc\ActivityRecord.cs" />
     <Compile Include="Ioc\AppIOC.cs" />
     <Compile Include="DataAccess\DataAccessInstaller.cs" />
     <Compile Include="Ioc\CollectionResolverFacility.cs" />

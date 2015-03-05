@@ -1,5 +1,6 @@
 ﻿using Castle.Core.Logging;
 using LoggingWithCastleWindsor.Infrastructure;
+using LoggingWithCastleWindsor.Ioc;
 using LoggingWithCastleWindsor.Presentation;
 
 namespace LoggingWithCastleWindsor
@@ -16,23 +17,23 @@ namespace LoggingWithCastleWindsor
             _controller = controller;
         }
 
-        public void Run()
+        [Activity("Running")]
+        public virtual void Run()
         {
             // Explicit logging ...
-            Logger.Info("Calling Find with Aapl");
+            Logger.Info("Explicit logging: Find with Aapl");
 
             _controller.Find("Aapl");
 
             // Explicit logging ...
-            Logger.Info("Calling List");
+            Logger.Info("Explicit logging: List");
 
             _controller.List(100.0m, 550.0m);
 
             // Explicit logging ...
-            Logger.Info("Calling Find with Nxt");
+            Logger.Info("Explicit logging: Find with Nxt");
 
             _controller.Find("Nxt");
-
         }
 
         public ILogger Logger

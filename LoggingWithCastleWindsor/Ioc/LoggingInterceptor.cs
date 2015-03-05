@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Castle.Core.Logging;
 using Castle.DynamicProxy;
@@ -49,6 +50,42 @@ namespace LoggingWithCastleWindsor.Ioc
             _loggers.Add(type, logger);
 
             return logger;
+        }
+    }
+
+    public class ActivityInterceptor : BaseInterceptor
+    {
+        public ActivityInterceptor(ILoggerFactory loggerFactory)
+            : base(loggerFactory)
+        { }
+
+        protected override void Intercept(ILogger logger, IInvocation invocation)
+        {
+            var activity = GetActivityOrDefault(invocation);
+
+            if (activity != null)
+            {
+                using (new ActivityRecord(activity.Name))
+                {
+                    base.Intercept(logger, invocation);
+                    return;
+                }
+            }
+
+            base.Intercept(logger, invocation);
+        }
+
+        private static ActivityAttribute GetActivityOrDefault(IInvocation invocation)
+        {
+            var type = typeof (ActivityAttribute);
+
+            var method = invocation.Method;
+
+            var activity = method.GetCustomAttributes(type)
+                .Concat(method.DeclaringType.GetCustomAttributes(type))
+                .FirstOrDefault() as ActivityAttribute;
+
+            return activity;
         }
     }
 

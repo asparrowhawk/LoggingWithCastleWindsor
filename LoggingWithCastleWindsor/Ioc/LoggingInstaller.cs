@@ -5,7 +5,7 @@ using Castle.Windsor;
 
 namespace LoggingWithCastleWindsor.Ioc
 {
-    class LoggingInstaller : IWindsorInstaller
+    internal class LoggingInstaller : IWindsorInstaller
     {
         private readonly LoggingContext _loggingContext;
 
@@ -27,7 +27,8 @@ namespace LoggingWithCastleWindsor.Ioc
             container.Install(
                 new InterceptorInstaller<LoggingInterceptor>(),
                 new InterceptorInstaller<ExceptionInterceptor>(),
-                new InterceptorInstaller<TimingInterceptor>()
+                new InterceptorInstaller<TimingInterceptor>(),
+                new InterceptorInstaller<ActivityInterceptor>()
                 );
         }
     }

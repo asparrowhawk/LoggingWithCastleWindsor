@@ -15,7 +15,8 @@ namespace LoggingWithCastleWindsor.Ioc
         private static bool MatchesNamespace(Type service)
         {
             return service.Namespace == "LoggingWithCastleWindsor.Domain" ||
-                   service.Namespace == "LoggingWithCastleWindsor.Presentation";
+                   service.Namespace == "LoggingWithCastleWindsor.Presentation" ||
+                   service.Namespace == "LoggingWithCastleWindsor";
         }
 
         public InterceptorReference[] SelectInterceptors(
@@ -25,6 +26,7 @@ namespace LoggingWithCastleWindsor.Ioc
             // Implicit logging ...
             return new[]
                 {
+                    InterceptorReference.ForType<ActivityInterceptor>(),
                     InterceptorReference.ForType<LoggingInterceptor>(),
                     InterceptorReference.ForType<ExceptionInterceptor>(),
                     InterceptorReference.ForType<TimingInterceptor>()
