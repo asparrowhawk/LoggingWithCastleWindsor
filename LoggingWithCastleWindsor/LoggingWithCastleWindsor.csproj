@@ -75,7 +75,10 @@
     <Compile Include="Ioc\InterceptorInstaller.cs" />
     <Compile Include="Ioc\InterceptorSelectorFacility.cs" />
     <Compile Include="Ioc\InterceptorsSelector.cs" />
-    <Compile Include="Ioc\LoggingInstaller.cs" />
+    <Compile Include="Ioc\LoggingContext.cs" />
+    <Compile Include="Ioc\LoggingInstaller.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Ioc\LoggingInterceptor.cs" />
     <Compile Include="Infrastructure\MethodInfoExtensions.cs" />
     <Compile Include="Ioc\PerformanceCounterSnapshot.cs" />
