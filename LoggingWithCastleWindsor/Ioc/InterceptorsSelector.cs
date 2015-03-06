@@ -14,9 +14,13 @@ namespace LoggingWithCastleWindsor.Ioc
 
         private static bool MatchesNamespace(Type service)
         {
-            return service.Namespace == "LoggingWithCastleWindsor.Domain" ||
-                   service.Namespace == "LoggingWithCastleWindsor.Presentation" ||
-                   service.Namespace == "LoggingWithCastleWindsor";
+            var namespaces = new[]
+            {
+                "LoggingWithCastleWindsor.Domain",
+                "LoggingWithCastleWindsor.Presentation"
+            };
+            return namespaces.Any(ns => service.Namespace == ns) ||
+                service == typeof(App);
         }
 
         public InterceptorReference[] SelectInterceptors(
