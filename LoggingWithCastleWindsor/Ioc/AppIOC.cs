@@ -17,7 +17,7 @@ namespace LoggingWithCastleWindsor.Ioc
             ConfigureFacilities(_container);
 
             _container.Install(
-                new LoggingInstaller(),
+                new LoggingInstaller<App>(),
                 new DataAccessInstaller(),
                 new PresentationInstaller()
                 );

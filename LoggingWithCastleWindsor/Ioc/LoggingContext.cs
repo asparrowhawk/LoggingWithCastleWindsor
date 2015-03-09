@@ -9,10 +9,12 @@ namespace LoggingWithCastleWindsor.Ioc
     internal class LoggingContext
     {
         private readonly Action<string, object> _addToConext;
+        private readonly Assembly _assembly;
 
-        public LoggingContext(Action<string, object> addToConext)
+        public LoggingContext(Action<string, object> addToConext, Assembly assembly)
         {
             _addToConext = addToConext;
+            _assembly = assembly;
         }
 
         class CounterSnapshotInformation
@@ -74,15 +76,14 @@ namespace LoggingWithCastleWindsor.Ioc
 
         private void AddAssemblyAttributes()
         {
-            var assembly = GetType().Assembly;
-
-            var attributes = assembly.GetCustomAttributes(false);
+            var attributes = _assembly.GetCustomAttributes(false);
+            var version = _assembly.GetName().Version;
 
             var values = new List<Tuple<string, object>>
             {
                 new Tuple<string, object>("Company Name", MatchAttribute<AssemblyCompanyAttribute>(attributes, attribute => attribute.Company)),
                 new Tuple<string, object>("Product Name", MatchAttribute<AssemblyProductAttribute>(attributes, attribute => attribute.Product)),
-                new Tuple<string, object>("Product Version", assembly.GetName().Version)
+                new Tuple<string, object>("Product Version", version)
             };
 
             values.ForEach(tuple => _addToConext(tuple.Item1, tuple.Item2));
