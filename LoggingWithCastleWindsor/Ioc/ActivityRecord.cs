@@ -13,7 +13,7 @@ namespace LoggingWithCastleWindsor.Ioc
         private static IDisposable Push(string value)
         {
             var stack = log4net.ThreadContext.Stacks["NDC"];
-            return stack.Push(value);
+            return stack.Push(string.Format("'{0}'", value));
         }
 
         internal ActivityRecord(string name, Func<string, IDisposable> push)

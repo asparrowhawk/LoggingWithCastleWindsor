@@ -8,12 +8,12 @@ namespace LoggingWithCastleWindsor.Ioc
 {
     internal class LoggingContext
     {
-        private readonly Action<string, object> _addToConext;
+        private readonly Action<string, object> _addToContext;
         private readonly Assembly _assembly;
 
-        public LoggingContext(Action<string, object> addToConext, Assembly assembly)
+        public LoggingContext(Action<string, object> addToContext, Assembly assembly)
         {
-            _addToConext = addToConext;
+            _addToContext = addToContext;
             _assembly = assembly;
         }
 
@@ -71,7 +71,7 @@ namespace LoggingWithCastleWindsor.Ioc
 
             var key = info.KeyFromPath();
 
-            _addToConext(key, performanceCounterSnapshot);
+            _addToContext(key, performanceCounterSnapshot);
         }
 
         private void AddAssemblyAttributes()
@@ -86,7 +86,7 @@ namespace LoggingWithCastleWindsor.Ioc
                 new Tuple<string, object>("Product Version", version)
             };
 
-            values.ForEach(tuple => _addToConext(tuple.Item1, tuple.Item2));
+            values.ForEach(tuple => _addToContext(tuple.Item1, tuple.Item2));
         }
 
         private static string MatchAttribute<TAttributeType>(

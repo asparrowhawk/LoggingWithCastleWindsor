@@ -46,7 +46,7 @@ namespace LoggingWithCastleWindsor.Infrastructure
             {
                 return GetTypeName(type);
             }
-            if (format.ToUpper() != "P")
+            if (format != "P" && format != "p" && format != "N")
             {
                 return TryHandleOtherFormats(format, arg);
             }
@@ -63,16 +63,30 @@ namespace LoggingWithCastleWindsor.Infrastructure
 
             var propertyInfos = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
+            Func<PropertyInfo, string> formatter = GetFormatter(format, formatProvider, arg, _equals);
+
             var namesAndValues = propertyInfos
                 .OrderBy(propertyInfo => propertyInfo.Name)
                 .Where(propertyInfo => propertyInfo.GetIndexParameters().Length == 0) // Exclude indexer properties
                 .Where(propertyInfo => propertyInfo.PropertyType != type) // Stop recursion i.e. classes with properties of the same type e.g. Composite Pattern or DateTime.Date
-                .Select(propertyInfo => string.Format(formatProvider, "{0}{1}'{2:P}'", propertyInfo.Name, _equals, propertyInfo.GetValue(arg, null)))
+                .Select(formatter)
                 .ToArray();
 
             return namesAndValues.Length > 0
                 ? string.Join(", ", namesAndValues)
                 : TryHandleOtherFormats(null, arg);
+        }
+
+        private static Func<PropertyInfo, string> GetFormatter(string format, IFormatProvider formatProvider, object arg, string @equals)
+        {
+            if (format == "P")
+            {
+                return propertyInfo => string.Format(formatProvider, "{0}{1}'{2:P}'", propertyInfo.Name, @equals, propertyInfo.GetValue(arg, null));
+            }
+            return format == "p"
+                ? (Func<PropertyInfo, string>)(propertyInfo => string.Format(formatProvider, "'{0:P}'", propertyInfo.GetValue(arg, null)))
+                : (propertyInfo => string.Format(formatProvider, "'{0:N}'", propertyInfo.Name))
+                ;
         }
 
         private static string CollectionType(Type type)
